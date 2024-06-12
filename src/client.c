@@ -75,13 +75,12 @@ int main(int argc, char *argv[]) {
     if (!fork()) { // this is the child process
         if (send(sockfd, "uwu", 3, 0) == -1)
             perror("send");
-
-        if ((numbytes = recv(sockfd, buf, MAXDATASIZE - 1, 0)) == -1) {
-            perror("recv");
-            exit(1);
-        }
-        close(sockfd);
         exit(0);
+    }
+
+    if ((numbytes = recv(sockfd, buf, MAXDATASIZE - 1, 0)) == -1) {
+        perror("recv");
+        exit(1);
     }
 
     buf[numbytes] = '\0';

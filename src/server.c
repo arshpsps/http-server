@@ -116,19 +116,21 @@ int main(void) {
                   get_in_addr((struct sockaddr *)&their_addr), s, sizeof s);
         printf("server: got connection from %s\n", s);
 
+        if ((numbytes = recv(new_fd, buf, MAXDATASIZE - 1, 0)) == -1) {
+            perror("recv");
+        }
+
+        buf[numbytes] = '\0';
+        printf("server: received '%s'\n", buf);
+
         if (!fork()) {
             close(sockfd); // child doesn't need the listener
-            if ((numbytes = recv(new_fd, buf, MAXDATASIZE - 1, 0)) == -1) {
-                perror("recv");
-                exit(1);
-            }
-            buf[numbytes] = '\0';
             if (send(new_fd, "Hello, world!", 13, 0) == -1)
                 perror("send");
+
             close(new_fd);
             exit(0);
         }
-        printf("client sent: '%s'\n", buf);
 
         // if (!fork()) {     // this is the child process
         //     if (send(new_fd, "Hello, world!", 13, 0) == -1)
