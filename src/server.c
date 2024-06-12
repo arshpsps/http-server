@@ -38,6 +38,11 @@ void *get_in_addr(struct sockaddr *sa) {
     return &(((struct sockaddr_in6 *)sa)->sin6_addr);
 }
 
+int generate_response(char str[]){
+    str[0] = '1';
+    return 1;
+}
+
 int main(void) {
     char buf[MAXDATASIZE];
     int sockfd, new_fd, numbytes; // listen on sock_fd, new connection on new_fd
