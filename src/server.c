@@ -127,7 +127,7 @@ int main(void) {
 
         buf[numbytes] = '\0';
         printf("server: received '%s'\n", buf);
-        char header[100];
+        char header[100] = ""; // initialize empty to auto terminate with \0
         for (int i = 0; i < strlen(buf); i++) {
             if (buf[i] == '\r' || buf[i] == '\n') {
                 break;
