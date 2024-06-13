@@ -15,7 +15,7 @@
 
 #define BACKLOG 10 // how many pending connections queue will hold
 
-#define MAXDATASIZE 100 // max number of bytes we can get at once
+#define MAXDATASIZE 1000 // max number of bytes we can get at once
 
 void sigchld_handler(int s) {
     (void)s; // quiet unused variable warning
@@ -38,7 +38,7 @@ void *get_in_addr(struct sockaddr *sa) {
     return &(((struct sockaddr_in6 *)sa)->sin6_addr);
 }
 
-int generate_response(char str[]){
+int generate_response(char str[]) {
     str[0] = '1';
     return 1;
 }
@@ -127,10 +127,31 @@ int main(void) {
 
         buf[numbytes] = '\0';
         printf("server: received '%s'\n", buf);
+        char header[100];
+        for (int i = 0; i < strlen(buf); i++) {
+            if (buf[i] == '\r' || buf[i] == '\n') {
+                break;
+            }
+            header[i] = buf[i];
+        }
+        printf("Header: '%s'\n", header);
+
+        char url[20];
+        char *fromSlash = strstr(header, "/");
+        for (int i = 0; i < strlen(fromSlash); i++) {
+            if (fromSlash[i] == ' ') {
+                break;
+            }
+            url[i] = fromSlash[i];
+        }
+
+        printf("URL: '%s'\n", url);
 
         if (!fork()) {
             close(sockfd); // child doesn't need the listener
-            if (send(new_fd, "Hello, world!", 13, 0) == -1)
+            char res[150] =
+                "HTTP/1.1 200 OK\r\n\r\n<html><body>Hello<body><html>";
+            if (send(new_fd, res, strlen(res), 0) == -1)
                 perror("send");
 
             close(new_fd);
