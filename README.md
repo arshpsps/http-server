@@ -12,6 +12,8 @@
 
 `make server`
 
+> At this point, we could just open up `127.0.0.1:3490` in a browser instead of launching the client (I recommend the browser as the client is an even worse implementation that the server)
+
 ##### Launch the client:
 
 `make client [host=<n>| -n <ipaddr/hostname>]`
@@ -35,4 +37,3 @@ Run the output directly to get the server up or create a systemd service
 ##### Run the output:
 
 `[<output-location>] [hostname=<n>| -n <ipaddr/hostname>]`
-
