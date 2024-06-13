@@ -127,17 +127,20 @@ int main(void) {
 
         buf[numbytes] = '\0';
         printf("server: received '%s'\n", buf);
-        char header[100] = ""; // initialize empty to auto terminate with \0
+
+        // TODO: handle client requests externally
+        char clientResponse[100] =
+            ""; // initialize empty to auto terminate with \0
         for (int i = 0; i < strlen(buf); i++) {
-            if (buf[i] == '\r' || buf[i] == '\n') {
+            if ((buf[i] == '\r' && buf[i + 1] == '\n') || buf[i] == '\n') {
                 break;
             }
-            header[i] = buf[i];
+            clientResponse[i] = buf[i];
         }
-        printf("Header: '%s'\n", header);
+        printf("Header: '%s'\n", clientResponse);
 
         char url[20] = ""; // initialize empty to auto terminate with \0
-        char *fromSlash = strstr(header, "/");
+        char *fromSlash = strstr(clientResponse, "/");
         for (int i = 0; i < strlen(fromSlash); i++) {
             if (fromSlash[i] == ' ') {
                 break;
@@ -147,6 +150,8 @@ int main(void) {
 
         printf("URL: '%s'\n", url);
 
+        // TODO: handle strings elegantly, maybe using functions to contruct
+        // response line, headers & body.
         if (!fork()) {
             close(sockfd);      // child doesn't need the listener
             char res[150] = ""; // initialize empty to auto terminate with \0
