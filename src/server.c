@@ -136,7 +136,7 @@ int main(void) {
         }
         printf("Header: '%s'\n", header);
 
-        char url[20];
+        char url[20] = ""; // initialize empty to auto terminate with \0
         char *fromSlash = strstr(header, "/");
         for (int i = 0; i < strlen(fromSlash); i++) {
             if (fromSlash[i] == ' ') {
@@ -148,9 +148,15 @@ int main(void) {
         printf("URL: '%s'\n", url);
 
         if (!fork()) {
-            close(sockfd); // child doesn't need the listener
-            char res[150] =
-                "HTTP/1.1 200 OK\r\n\r\n<html><body>Hello<body><html>";
+            close(sockfd);      // child doesn't need the listener
+            char res[150] = ""; // initialize empty to auto terminate with \0
+            strcat(res, "HTTP/1.1 200 OK\r\n"); // response / status line
+            strcat(res, "");                    // header lines, ending in \r\n
+            strcat(res, "\r\n"); // empty CRLF to indicate message body start
+            strcat(res, "<html><body>"); // message body
+            strcat(res, url);
+            strcat(res, "</body></html>");
+
             if (send(new_fd, res, strlen(res), 0) == -1)
                 perror("send");
 
