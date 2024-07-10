@@ -43,6 +43,26 @@ int generate_response(char str[]) {
     return 1;
 }
 
+void embed_body(char *res) {
+    FILE *fp;
+    char *line = NULL;
+    size_t len = 0;
+    ssize_t read;
+
+    fp = fopen("data/index.html", "r");
+    if (fp == NULL)
+        exit(EXIT_FAILURE);
+
+    while ((read = getline(&line, &len, fp)) != -1) {
+        strcat(res, line);
+    }
+
+    fclose(fp);
+    if (line)
+        free(line);
+    return;
+}
+
 int main(void) {
     char buf[MAXDATASIZE];
     int sockfd, new_fd, numbytes; // listen on sock_fd, new connection on new_fd
@@ -154,13 +174,15 @@ int main(void) {
         // response line, headers & body.
         if (!fork()) {
             close(sockfd);      // child doesn't need the listener
-            char res[150] = ""; // initialize empty to auto terminate with \0
+            char res[500] = ""; // initialize empty to auto terminate with \0
             strcat(res, "HTTP/1.1 200 OK\r\n"); // response / status line
             strcat(res, "");                    // header lines, ending in \r\n
             strcat(res, "\r\n"); // empty CRLF to indicate message body start
-            strcat(res, "<html><body>"); // message body
-            strcat(res, url);
-            strcat(res, "</body></html>");
+            // strcat(res, "<html><body>");
+            // strcat(res, url);
+            // strcat(res, "</body></html>");
+            embed_body(res); // message body
+            // printf(">>>%s\n", res);
 
             if (send(new_fd, res, strlen(res), 0) == -1)
                 perror("send");
