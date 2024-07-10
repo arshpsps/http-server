@@ -43,6 +43,8 @@ int generate_response(char str[]) {
     return 1;
 }
 
+void parse_request(char *req) {}
+
 void embed_body(char *res) {
     FILE *fp;
     char *line = NULL;
@@ -147,6 +149,8 @@ int main(void) {
 
         buf[numbytes] = '\0';
         printf("server: received '%s'\n", buf);
+
+        parse_request(buf);
 
         // TODO: handle client requests externally
         char clientResponse[100] =
