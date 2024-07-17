@@ -17,6 +17,19 @@
 
 #define MAXDATASIZE 1000 // max number of bytes we can get at once
 
+typedef enum TokType {
+    Method,
+    SP,
+    RequestURI,
+    HTTPVer,
+    CRLF,
+    RequestHeader,
+    HeaderVal,
+    StatusCode,
+    ReasonPhrase,
+    Body
+} TokType;
+
 void sigchld_handler(int s) {
     (void)s; // quiet unused variable warning
 
