@@ -191,6 +191,7 @@ int main(void) {
         // response line, headers & body.
         if (!fork()) {
             close(sockfd);      // child doesn't need the listener
+            // FIXME: string size ??? ig maybe check when strcat or dynamic something wtf?
             char res[500] = ""; // initialize empty to auto terminate with \0
             strcat(res, "HTTP/1.1 200 OK\r\n"); // response / status line
             strcat(res, "");                    // header lines, ending in \r\n
