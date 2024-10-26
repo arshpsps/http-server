@@ -142,6 +142,7 @@ int main(void) {
         exit(1);
     }
 
+    printf("server: listening on Port 3490\n");
     printf("server: waiting for connections...\n");
 
     while (1) { // main accept() loop
@@ -176,7 +177,9 @@ int main(void) {
         }
         printf("Header: '%s'\n", clientResponse);
 
-        char url[20] = ""; // initialize empty to auto terminate with \0
+        char *url = malloc(sizeof(char) *
+                           20); // initialize empty to auto terminate with \0
+        // char *new = realloc(url, 200);
         char *fromSlash = strstr(clientResponse, "/");
         for (int i = 0; i < strlen(fromSlash); i++) {
             if (fromSlash[i] == ' ') {
@@ -190,8 +193,9 @@ int main(void) {
         // TODO: handle strings elegantly, maybe using functions to contruct
         // response line, headers & body.
         if (!fork()) {
-            close(sockfd);      // child doesn't need the listener
-            // FIXME: string size ??? ig maybe check when strcat or dynamic something wtf?
+            close(sockfd); // child doesn't need the listener
+            // FIXME: string size ??? ig maybe check when strcat or dynamic
+            // something wtf?
             char res[500] = ""; // initialize empty to auto terminate with \0
             strcat(res, "HTTP/1.1 200 OK\r\n"); // response / status line
             strcat(res, "");                    // header lines, ending in \r\n
@@ -215,6 +219,7 @@ int main(void) {
         //     close(new_fd);
         //     exit(0);
         // }
+        free(url);
         close(new_fd); // parent doesn't need this
     }
 
