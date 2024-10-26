@@ -170,10 +170,10 @@ int main(void) {
         char clientResponse[100] =
             ""; // initialize empty to auto terminate with \0
         for (int i = 0; i < strlen(buf); i++) {
-            if ((buf[i] == '\r' && buf[i + 1] == '\n') || buf[i] == '\n') {
+            clientResponse[i] = buf[i];
+            if (buf[i] == '\n') {
                 break;
             }
-            clientResponse[i] = buf[i];
         }
         printf("Header: '%s'\n", clientResponse);
 
