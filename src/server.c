@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -79,6 +80,9 @@ void embed_body(char *res) {
 }
 
 int main(void) {
+
+    mkdir("webapps", 0755);
+
     char buf[MAXDATASIZE];
     int sockfd, new_fd, numbytes; // listen on sock_fd, new connection on new_fd
     struct addrinfo hints, *servinfo, *p;
